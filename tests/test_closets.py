@@ -586,7 +586,10 @@ class TestDiaryIngest:
         # State file does exist under ~/.mempalace/state/.
         state_path = _state_file_for(str(palace_dir), diary_dir.resolve())
         assert state_path.exists()
-        assert "/.mempalace/state/" in str(state_path)
+        # Platform-neutral path check: compare parents rather than a hardcoded
+        # separator string that would fail on Windows (``\.mempalace\state\``).
+        assert state_path.parent.name == "state"
+        assert state_path.parent.parent.name == ".mempalace"
 
     def test_wing_prefixed_drawer_id_prevents_cross_diary_collision(self, tmp_path):
         # Regression: the original implementation used
